@@ -76,3 +76,14 @@ ul {
   flex-direction: column;
   width: 100%;
 }
+
+.errors > ul {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.error {
+  color: red;
+  padding: 2px;
+}
