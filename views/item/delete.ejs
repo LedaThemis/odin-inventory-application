@@ -1,5 +1,18 @@
 <h1><%= title %></h1>
 <p>Are you sure you want to delete <strong><%= item.name %></strong>?</p>
 <form method="POST">
+  <div class="form-group">
+    <label for="password">Password:</label>
+    <input id="password" name="password" type="password" placeholder="Hint: TheOdinProject" required>
+  </div>
   <button type="submit" class="submit-button">Yes</button>
 </form>
+<% if (errors !== undefined) { %>
+<div class="errors">
+  <ul>
+    <% for (let i in errors) { %>
+    <li class="error">- <%= errors[i].msg %></li>
+    <% } %>
+  </ul>
+</div>
+<% } %>
