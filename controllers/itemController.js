@@ -120,10 +120,26 @@ exports.item_delete_get = function (req, res, next) {
 
 exports.item_delete_post = function (req, res, next) {
   if (req.body.password === process.env.SECRET_PASSWORD) {
-    Item.findByIdAndDelete(req.params.id, (err) => {
+    Item.findById(req.params.id, (err, item) => {
       if (err) next(err);
 
-      res.redirect('/');
+      if (item.image) {
+        const checkFileExists = (s) => new Promise((r) => fs.access(s, fs.constants.F_OK, (e) => r(!e)));
+        // remove image before update (if it exists)
+        checkFileExists(item.image).then((exists) => {
+          if (exists) {
+            fs.unlink(item.image, (err) => {
+              if (err) next(err);
+            });
+          }
+        });
+      }
+
+      Item.findByIdAndDelete(req.params.id, (err) => {
+        if (err) next(err);
+
+        res.redirect('/');
+      });
     });
   } else {
     Item.findById(req.params.id).exec((err, item) => {
