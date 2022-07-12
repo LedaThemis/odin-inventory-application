@@ -105,12 +105,18 @@ exports.item_create_post = [
 
 exports.item_delete_get = function (req, res, next) {
   Item.findById(req.params.id).exec((err, item) => {
+    if (err) next(err);
+
     res.render('index', { title: 'Delete Item', content: 'item/delete', props: { item } });
   });
 };
 
 exports.item_delete_post = function (req, res, next) {
-  res.send('NOT IMPLEMENTED');
+  Item.findByIdAndDelete(req.params.id, (err) => {
+    if (err) next(err);
+
+    res.redirect('/');
+  });
 };
 
 exports.item_update_get = function (req, res, next) {
