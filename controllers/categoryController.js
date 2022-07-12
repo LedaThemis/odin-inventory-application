@@ -1,5 +1,6 @@
 const async = require('async');
 const { body, validationResult } = require('express-validator');
+const category = require('../models/category');
 
 const Category = require('../models/category');
 const Item = require('../models/item');
@@ -99,7 +100,33 @@ exports.category_delete_get = function (req, res, next) {
 };
 
 exports.category_delete_post = function (req, res, next) {
-  res.send('NOT IMPLEMENTED');
+  async.parallel(
+    {
+      category: (callback) => {
+        Category.findById(req.params.id).exec(callback);
+      },
+      category_items: (callback) => {
+        Item.find({ category: req.params.id }, 'name').exec(callback);
+      },
+    },
+    (err, results) => {
+      if (err) next(err);
+
+      if (results.category_items.length > 0) {
+        res.render('index', {
+          title: `Delete Category`,
+          content: 'category/delete',
+          props: { ...results },
+        });
+      } else {
+        Category.findByIdAndDelete(req.params.id, (err) => {
+          if (err) next(err);
+
+          res.redirect('/');
+        });
+      }
+    }
+  );
 };
 
 exports.category_update_get = function (req, res, next) {
