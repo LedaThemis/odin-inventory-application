@@ -20,7 +20,8 @@
     <label for="category">Category:</label>
     <select id="category" name="category">
       <% for (let i in categories) { %>
-      <option value=<%= categories[i]._id %>><%= categories[i].name %></option>
+      <% const selected = item !== undefined && `${categories[i]._id}` === `${item.category}` ? "selected" : ""; %>
+      <option value=<%= categories[i]._id %> <%= selected %>><%= categories[i].name %></option>
       <% } %>
     </select>
   </div>
