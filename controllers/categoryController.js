@@ -34,22 +34,23 @@ exports.category_create_get = function (req, res, next) {
   });
 };
 
-exports.category_create_post = [
+const category_validators = [
   // Validate and sanitize fields.
-  body('name', 'Name must not be empty.')
-    .custom(async (name) => {
-      return Category.find({ name }).then((results) => {
-        if (results.length === 0) {
-          return Promise.resolve();
-        } else {
-          return Promise.reject('Category is already available');
-        }
-      });
-    })
-    .trim()
-    .isLength({ min: 1 })
-    .escape(),
+  body('name', 'Name must not be empty.').trim().isLength({ min: 1 }).escape(),
   body('description', 'Description must not be empty.').trim().isLength({ min: 1 }).escape(),
+];
+
+exports.category_create_post = [
+  ...category_validators,
+  body('name').custom(async (name) => {
+    return Category.findOne({ name }).then((foundCategory) => {
+      if (foundCategory) {
+        return Promise.reject('Category is already available');
+      } else {
+        return Promise.resolve();
+      }
+    });
+  }),
 
   (req, res, next) => {
     // Extract the validation errors from a request
@@ -84,9 +85,54 @@ exports.category_delete_post = function (req, res, next) {
 };
 
 exports.category_update_get = function (req, res, next) {
-  res.send('NOT IMPLEMENTED');
+  Category.findById(req.params.id).exec((err, category) => {
+    if (err) next(err);
+
+    res.render('index', {
+      title: 'Update Category',
+      content: 'category/form',
+      props: { category, errors: undefined },
+    });
+  });
 };
 
-exports.category_update_post = function (req, res, next) {
-  res.send('NOT IMPLEMENTED');
-};
+exports.category_update_post = [
+  ...category_validators,
+
+  (req, res, next) => {
+    // Extract the validation errors from a request
+    const errors = validationResult(req);
+    const fields = {
+      name: req.body.name,
+      description: req.body.description,
+    };
+
+    const category = new Category(fields);
+
+    if (!errors.isEmpty()) {
+      res.render('index', {
+        title: 'Update Category',
+        content: 'category/form',
+        props: { category, errors: errors.errors },
+      });
+    } else {
+      Category.findOne({ name: req.body.name }).exec((err, foundCategory) => {
+        if (err) next(err);
+
+        if (foundCategory && `${foundCategory._id}` !== `${req.params.id}`) {
+          res.render('index', {
+            title: 'Update Category',
+            content: 'category/form',
+            props: { category, errors: [{ msg: 'A category with this name is already available' }] },
+          });
+        } else {
+          Category.findByIdAndUpdate(req.params.id, fields, {}, (err, updatedCategory) => {
+            if (err) next(err);
+
+            res.redirect(updatedCategory.url);
+          });
+        }
+      });
+    }
+  },
+];
