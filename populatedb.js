@@ -49,7 +49,7 @@ const categoryCreate = (name, description, cb) => {
       cb(err, null);
     } else {
       console.log('New category:', category);
-      category.push(category);
+      categories.push(category);
       cb(null, category);
     }
   });
