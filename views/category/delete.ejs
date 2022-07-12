@@ -22,15 +22,8 @@
   <button type="submit" class="submit-button">Yes</button>
 </form>
 <% } %>
-<% if (errors !== undefined) { %>
-<div class="errors">
-  <ul>
-    <% for (let i in errors) { %>
-    <li class="error">- <%= errors[i].msg %></li>
-    <% } %>
-  </ul>
-</div>
-<% } %>
+
+<%- include("../errors", { errors }); %>
 <style>
   #category-items {
     display: flex;
