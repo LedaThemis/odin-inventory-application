@@ -26,7 +26,7 @@ router.post('/item/:id/delete', item_controller.item_delete_post);
 router.get('/item/:id/update', item_controller.item_update_get);
 
 // POST request to update Item
-router.post('/item/:id/update', item_controller.item_update_get);
+router.post('/item/:id/update', item_controller.item_update_post);
 
 // GET request for one item
 router.get('/item/:id', item_controller.item_detail);
@@ -49,7 +49,7 @@ router.post('/category/:id/delete', category_controller.category_delete_post);
 router.get('/category/:id/update', category_controller.category_update_get);
 
 // POST request to update Category
-router.post('/category/:id/update', category_controller.category_update_get);
+router.post('/category/:id/update', category_controller.category_update_post);
 
 // GET request for one Category
 router.get('/category/:id', category_controller.category_detail);
