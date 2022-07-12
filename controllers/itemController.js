@@ -15,7 +15,7 @@ exports.item_create_get = function (req, res, next) {
   Category.find().exec((err, categories) => {
     if (err) next(err);
 
-    res.render('index', { title: 'Create Item', content: 'item/create_get', props: { categories, item: undefined } });
+    res.render('index', { title: 'Create Item', content: 'item/create', props: { categories, item: undefined } });
   });
 };
 
