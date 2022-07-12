@@ -29,7 +29,7 @@ exports.category_detail = function (req, res, next) {
 exports.category_create_get = function (req, res, next) {
   res.render('index', {
     title: 'Create Category',
-    content: 'category/create',
+    content: 'category/form',
     props: { category: undefined, errors: undefined },
   });
 };
@@ -63,7 +63,7 @@ exports.category_create_post = [
     if (!errors.isEmpty()) {
       res.render('index', {
         title: 'Create Category',
-        content: 'category/create',
+        content: 'category/form',
         props: { category, errors: errors.errors },
       });
     } else {

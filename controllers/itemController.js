@@ -19,7 +19,7 @@ exports.item_create_get = function (req, res, next) {
 
     res.render('index', {
       title: 'Create Item',
-      content: 'item/create',
+      content: 'item/form',
       props: { categories, item: undefined, errors: undefined, lastSelectedCategoryID: undefined },
     });
   });
@@ -87,7 +87,7 @@ exports.item_create_post = [
 
         res.render('index', {
           title: 'Create Item',
-          content: 'item/create',
+          content: 'item/form',
           props: { categories, item, errors: errors.errors },
         });
       });
