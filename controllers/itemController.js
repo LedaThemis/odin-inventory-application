@@ -74,14 +74,20 @@ exports.item_create_post = [
   (req, res, next) => {
     // Extract the validation errors from a request
     const errors = validationResult(req);
-
-    const item = new Item({
+    let fields = {
       name: req.body.name,
       description: req.body.description,
       category: req.body.category,
       price: req.body.price,
       numberInStock: req.body.numberInStock,
-    });
+    };
+
+    // Image uploaded
+    if (req.file) {
+      fields = { ...fields, image: req.file.path };
+    }
+
+    const item = new Item(fields);
 
     if (!errors.isEmpty()) {
       Category.find().exec((err, categories) => {
