@@ -1,6 +1,7 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
+var fs = require('fs');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
@@ -8,6 +9,10 @@ var indexRouter = require('./routes/index');
 
 const compression = require('compression');
 const helmet = require('helmet');
+
+if (!fs.existsSync('./uploads')) {
+  fs.mkdirSync('./uploads');
+}
 
 var app = express();
 
