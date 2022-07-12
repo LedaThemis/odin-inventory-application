@@ -93,7 +93,7 @@ exports.category_delete_get = function (req, res, next) {
       res.render('index', {
         title: `Delete ${results.category.name}`,
         content: 'category/delete',
-        props: { ...results },
+        props: { ...results, errors: undefined },
       });
     }
   );
@@ -116,14 +116,36 @@ exports.category_delete_post = function (req, res, next) {
         res.render('index', {
           title: `Delete ${results.category.name}`,
           content: 'category/delete',
-          props: { ...results },
+          props: { ...results, errors: undefined },
         });
       } else {
-        Category.findByIdAndDelete(req.params.id, (err) => {
-          if (err) next(err);
+        if (req.body.password === process.env.SECRET_PASSWORD) {
+          Category.findByIdAndDelete(req.params.id, (err) => {
+            if (err) next(err);
 
-          res.redirect('/');
-        });
+            res.redirect('/');
+          });
+        } else {
+          async.parallel(
+            {
+              category: (callback) => {
+                Category.findById(req.params.id).exec(callback);
+              },
+              category_items: (callback) => {
+                Item.find({ category: req.params.id }, 'name').exec(callback);
+              },
+            },
+            (err, results) => {
+              if (err) next(err);
+
+              res.render('index', {
+                title: `Delete ${results.category.name}`,
+                content: 'category/delete',
+                props: { ...results, errors: [{ msg: 'Wrong password!' }] },
+              });
+            }
+          );
+        }
       }
     }
   );

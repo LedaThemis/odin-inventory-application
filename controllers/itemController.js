@@ -107,16 +107,28 @@ exports.item_delete_get = function (req, res, next) {
   Item.findById(req.params.id).exec((err, item) => {
     if (err) next(err);
 
-    res.render('index', { title: `Delete ${item.name}`, content: 'item/delete', props: { item } });
+    res.render('index', { title: `Delete ${item.name}`, content: 'item/delete', props: { item, errors: undefined } });
   });
 };
 
 exports.item_delete_post = function (req, res, next) {
-  Item.findByIdAndDelete(req.params.id, (err) => {
-    if (err) next(err);
+  if (req.body.password === process.env.SECRET_PASSWORD) {
+    Item.findByIdAndDelete(req.params.id, (err) => {
+      if (err) next(err);
 
-    res.redirect('/');
-  });
+      res.redirect('/');
+    });
+  } else {
+    Item.findById(req.params.id).exec((err, item) => {
+      if (err) next(err);
+
+      res.render('index', {
+        title: `Delete ${item.name}`,
+        content: 'item/delete',
+        props: { item, errors: [{ msg: 'Wrong password!' }] },
+      });
+    });
+  }
 };
 
 exports.item_update_get = function (req, res, next) {
