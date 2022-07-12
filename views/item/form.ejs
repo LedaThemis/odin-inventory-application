@@ -1,4 +1,4 @@
-<h1>Create Item</h1>
+<h1><%= title %></h1>
 <form class="form" method="POST">
   <div class="form-group">
     <label for="name">Name:</label>
@@ -24,7 +24,7 @@
       <% } %>
     </select>
   </div>
-  <button type="submit" class="submit-button">Create Item</button>
+  <button type="submit" class="submit-button"><%= title %></button>
 </form>
 
 <% if (errors !== undefined) { %>
