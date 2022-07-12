@@ -58,42 +58,48 @@ const categoryCreate = (name, description, cb) => {
 /**
  * Creates list of categories
  */
-const createCategories = () => {
-  async.series([
-    (callback) => {
-      categoryCreate('Fruits', 'Has all fruits you need!', callback);
-    },
-    (callback) => {
-      categoryCreate('Vegetables', 'Has all vegetables you need!', callback);
-    },
-  ]);
+const createCategories = (cb) => {
+  async.series(
+    [
+      (callback) => {
+        categoryCreate('Fruits', 'Has all fruits you need!', callback);
+      },
+      (callback) => {
+        categoryCreate('Vegetables', 'Has all vegetables you need!', callback);
+      },
+    ],
+    cb
+  );
 };
 
 /**
  * Creates a list of items
  */
-const createItems = () => {
-  async.series([
-    (callback) => {
-      itemCreate('Green Apple', 'Tasty and Fresh!', 0.5, categories[0], 6, callback);
-    },
-    (callback) => {
-      itemCreate('Red Apple', 'Fresh red apples!', 0.4, categories[0], 4, callback);
-    },
-    (callback) => {
-      itemCreate('Watermelon', "Great when it's hot!", 0.1, categories[0], 32, callback);
-    },
-    (callback) => {
-      itemCreate('Orange', 'Juicy and refreshing!', 0.5, categories[0], 8, callback);
-    },
-    (callback) => {
-      itemCreate('Tomato', 'Great imported tomatoes', 0.25, categories[1], 10, callback);
-    },
-    (callback) => {
-      itemCreate('Cucumber', 'Boring green cucumbers', 0.15, categories[1], 4, callback);
-    },
-    (callback) => {
-      itemCreate('Potato', 'potatoes!', 0.15, categories[1], 18, callback);
-    },
-  ]);
+const createItems = (cb) => {
+  async.series(
+    [
+      (callback) => {
+        itemCreate('Green Apple', 'Tasty and Fresh!', 0.5, categories[0], 6, callback);
+      },
+      (callback) => {
+        itemCreate('Red Apple', 'Fresh red apples!', 0.4, categories[0], 4, callback);
+      },
+      (callback) => {
+        itemCreate('Watermelon', "Great when it's hot!", 0.1, categories[0], 32, callback);
+      },
+      (callback) => {
+        itemCreate('Orange', 'Juicy and refreshing!', 0.5, categories[0], 8, callback);
+      },
+      (callback) => {
+        itemCreate('Tomato', 'Great imported tomatoes', 0.25, categories[1], 10, callback);
+      },
+      (callback) => {
+        itemCreate('Cucumber', 'Boring green cucumbers', 0.15, categories[1], 4, callback);
+      },
+      (callback) => {
+        itemCreate('Potato', 'potatoes!', 0.15, categories[1], 18, callback);
+      },
+    ],
+    cb
+  );
 };
