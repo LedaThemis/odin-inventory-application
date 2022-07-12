@@ -91,3 +91,8 @@ ul {
   color: red;
   padding: 2px;
 }
+
+.manage-links {
+  display: flex;
+  justify-content: space-between;
+}
