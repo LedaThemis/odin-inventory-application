@@ -1,4 +1,5 @@
 const async = require('async');
+const fs = require('fs');
 const { body, validationResult, check } = require('express-validator');
 
 const Item = require('../models/item');
@@ -167,13 +168,18 @@ exports.item_update_post = [
   (req, res, next) => {
     // Extract the validation errors from a request
     const errors = validationResult(req);
-    const fields = {
+    let fields = {
       name: req.body.name,
       description: req.body.description,
       category: req.body.category,
       price: req.body.price,
       numberInStock: req.body.numberInStock,
     };
+
+    // Image uploaded
+    if (req.file !== undefined) {
+      fields = { ...fields, image: req.file.path };
+    }
 
     const item = new Item(fields);
 
@@ -202,10 +208,24 @@ exports.item_update_post = [
             });
           });
         } else {
-          Item.findByIdAndUpdate(req.params.id, fields, {}, (err, updatedItem) => {
-            if (err) next(err);
+          Item.findById(req.params.id).exec((err, item) => {
+            if (item.image && fields.image) {
+              const checkFileExists = (s) => new Promise((r) => fs.access(s, fs.constants.F_OK, (e) => r(!e)));
+              // remove image before update (if it exists)
+              checkFileExists(item.image).then((exists) => {
+                if (exists) {
+                  fs.unlink(item.image, (err) => {
+                    if (err) next(err);
+                  });
+                }
+              });
+            }
 
-            res.redirect(updatedItem.url);
+            Item.findByIdAndUpdate(req.params.id, fields, {}, (err, updatedItem) => {
+              if (err) next(err);
+
+              res.redirect(updatedItem.url);
+            });
           });
         }
       });
