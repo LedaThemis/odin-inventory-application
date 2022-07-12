@@ -77,7 +77,25 @@ exports.category_create_post = [
   },
 ];
 exports.category_delete_get = function (req, res, next) {
-  res.send('NOT IMPLEMENTED');
+  async.parallel(
+    {
+      category: (callback) => {
+        Category.findById(req.params.id).exec(callback);
+      },
+      category_items: (callback) => {
+        Item.find({ category: req.params.id }, 'name').exec(callback);
+      },
+    },
+    (err, results) => {
+      if (err) next(err);
+
+      res.render('index', {
+        title: `Delete Category`,
+        content: 'category/delete',
+        props: { ...results },
+      });
+    }
+  );
 };
 
 exports.category_delete_post = function (req, res, next) {
