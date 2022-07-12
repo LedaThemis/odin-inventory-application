@@ -77,6 +77,10 @@ ul {
   width: 100%;
 }
 
+.submit-button {
+  cursor: pointer;
+}
+
 .errors > ul {
   display: flex;
   flex-direction: column;
