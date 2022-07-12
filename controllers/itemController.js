@@ -1,5 +1,13 @@
+const Item = require('../models/item');
+
 exports.item_detail = function (req, res, next) {
-  res.render('NOT IMPLEMENTED');
+  Item.findById(req.params.id)
+    .populate('category')
+    .exec((err, item) => {
+      if (err) next(err);
+
+      res.render('index', { title: `${item.name}`, content: 'item/detail', props: { item } });
+    });
 };
 
 exports.item_create_get = function (req, res, next) {
