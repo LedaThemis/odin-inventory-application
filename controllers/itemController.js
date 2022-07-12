@@ -104,7 +104,9 @@ exports.item_create_post = [
 ];
 
 exports.item_delete_get = function (req, res, next) {
-  res.send('NOT IMPLEMENTED');
+  Item.findById(req.params.id).exec((err, item) => {
+    res.render('index', { title: 'Delete Item', content: 'item/delete', props: { item } });
+  });
 };
 
 exports.item_delete_post = function (req, res, next) {
