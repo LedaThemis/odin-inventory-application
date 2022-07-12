@@ -1,3 +1,4 @@
+const async = require('async');
 const { body, validationResult } = require('express-validator');
 
 const Item = require('../models/item');
@@ -110,7 +111,27 @@ exports.item_delete_post = function (req, res, next) {
 };
 
 exports.item_update_get = function (req, res, next) {
-  res.send('NOT IMPLEMENTED');
+  async.parallel(
+    {
+      categories: (callback) => {
+        Category.find().exec(callback);
+      },
+      currentItem: (callback) => {
+        Item.findById(req.params.id).exec(callback);
+      },
+    },
+    (err, results) => {
+      if (err) next(err);
+
+      const { categories, currentItem } = results;
+
+      res.render('index', {
+        title: 'Update Item',
+        content: 'item/form',
+        props: { categories, item: currentItem, errors: undefined },
+      });
+    }
+  );
 };
 
 exports.item_update_post = function (req, res, next) {
