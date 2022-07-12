@@ -1,13 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
+const home_controller = require('../controllers/homeController');
 const item_controller = require('../controllers/itemController');
 const category_controller = require('../controllers/categoryController');
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Home', content: 'home', props: {} });
-});
+router.get('/', home_controller.home_detail);
 
 // ITEM ROUTES
 
