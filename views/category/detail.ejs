@@ -2,6 +2,7 @@
 <p>Description: <%= category.description %></p>
 <div id="category-items">
   <h3>Items in <%= category.name %></h3>
+  <% if (category_items.length > 0) { %>
   <ul>
     <% for (let i in category_items) { %>
     <li> -
@@ -10,6 +11,9 @@
       </a>
     </li>
     <% } %>
+    <% } else { %>
+      <p>There are no items in this category.</p>
+      <% } %>
   </ul>
 </div>
 <hr>
