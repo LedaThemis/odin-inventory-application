@@ -37,3 +37,20 @@ const itemCreate = (name, description, price, category, numberInStock, cb) => {
     }
   });
 };
+
+/**
+ * Creates a new category
+ */
+const categoryCreate = (name, description, cb) => {
+  const category = new Category({ name, description });
+
+  category.save((err) => {
+    if (err) {
+      cb(err, null);
+    } else {
+      console.log('New category:', category);
+      category.push(category);
+      cb(null, category);
+    }
+  });
+};
