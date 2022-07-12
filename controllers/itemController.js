@@ -20,7 +20,7 @@ exports.item_create_get = function (req, res, next) {
     res.render('index', {
       title: 'Create Item',
       content: 'item/form',
-      props: { categories, item: undefined, errors: undefined, lastSelectedCategoryID: undefined },
+      props: { categories, item: undefined, errors: undefined },
     });
   });
 };
