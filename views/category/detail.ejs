@@ -12,13 +12,13 @@
     </li>
     <% } %>
     <% } else { %>
-      <p>There are no items in this category.</p>
-      <% } %>
+    <p>There are no items in this category.</p>
+    <% } %>
   </ul>
 </div>
 <hr>
 <div class="manage-links">
-  <a href="/update">Update</a> <a href="/delete">Delete</a>
+  <a href="<%= category._id %>/update">Update</a> <a href="<%= category._id %>/delete">Delete</a>
 </div>
 <style>
   #category-items {
