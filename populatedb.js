@@ -103,3 +103,14 @@ const createItems = (cb) => {
     cb
   );
 };
+
+async.series([createCategories, createItems], (err, results) => {
+  if (err) {
+    console.log('ERROR:', err);
+  } else {
+    console.log('Results:', results);
+  }
+
+  // Disconnect from database
+  mongoose.connection.close();
+});
