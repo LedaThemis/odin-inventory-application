@@ -26,7 +26,11 @@ exports.category_detail = function (req, res, next) {
 };
 
 exports.category_create_get = function (req, res, next) {
-  res.send('NOT IMPLEMENTED');
+  res.render('index', {
+    title: 'Create Category',
+    content: 'category/create',
+    props: { category: undefined, errors: undefined },
+  });
 };
 
 exports.category_create_post = function (req, res, next) {
