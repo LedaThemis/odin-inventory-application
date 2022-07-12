@@ -7,7 +7,13 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+const compression = require('compression');
+const helmet = require('helmet');
+
 var app = express();
+
+// Use helmet
+app.use(helmet());
 
 // Set up mongoose connection
 const mongoose = require('mongoose');
@@ -24,6 +30,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(compression());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
