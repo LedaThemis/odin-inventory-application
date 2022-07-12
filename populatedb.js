@@ -54,3 +54,17 @@ const categoryCreate = (name, description, cb) => {
     }
   });
 };
+
+/**
+ * Creates list of categories
+ */
+const createCategories = () => {
+  async.series([
+    (callback) => {
+      categoryCreate('Fruits', 'Has all fruits you need!', callback);
+    },
+    (callback) => {
+      categoryCreate('Vegetables', 'Has all vegetables you need!', callback);
+    },
+  ]);
+};
