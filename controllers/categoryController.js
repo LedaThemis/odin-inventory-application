@@ -91,7 +91,7 @@ exports.category_delete_get = function (req, res, next) {
       if (err) next(err);
 
       res.render('index', {
-        title: `Delete Category`,
+        title: `Delete ${results.category.name}`,
         content: 'category/delete',
         props: { ...results },
       });
@@ -114,7 +114,7 @@ exports.category_delete_post = function (req, res, next) {
 
       if (results.category_items.length > 0) {
         res.render('index', {
-          title: `Delete Category`,
+          title: `Delete ${results.category.name}`,
           content: 'category/delete',
           props: { ...results },
         });
@@ -134,7 +134,7 @@ exports.category_update_get = function (req, res, next) {
     if (err) next(err);
 
     res.render('index', {
-      title: 'Update Category',
+      title: `Update ${category.name}`,
       content: 'category/form',
       props: { category, errors: undefined },
     });
@@ -156,7 +156,7 @@ exports.category_update_post = [
 
     if (!errors.isEmpty()) {
       res.render('index', {
-        title: 'Update Category',
+        title: `Update ${category.name}`,
         content: 'category/form',
         props: { category, errors: errors.errors },
       });
@@ -166,7 +166,7 @@ exports.category_update_post = [
 
         if (foundCategory && `${foundCategory._id}` !== `${req.params.id}`) {
           res.render('index', {
-            title: 'Update Category',
+            title: `Update ${category.name}`,
             content: 'category/form',
             props: { category, errors: [{ msg: 'A category with this name is already available' }] },
           });

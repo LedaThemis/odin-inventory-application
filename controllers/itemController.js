@@ -107,7 +107,7 @@ exports.item_delete_get = function (req, res, next) {
   Item.findById(req.params.id).exec((err, item) => {
     if (err) next(err);
 
-    res.render('index', { title: 'Delete Item', content: 'item/delete', props: { item } });
+    res.render('index', { title: `Delete ${item.name}`, content: 'item/delete', props: { item } });
   });
 };
 
@@ -125,19 +125,19 @@ exports.item_update_get = function (req, res, next) {
       categories: (callback) => {
         Category.find().exec(callback);
       },
-      currentItem: (callback) => {
+      item: (callback) => {
         Item.findById(req.params.id).exec(callback);
       },
     },
     (err, results) => {
       if (err) next(err);
 
-      const { categories, currentItem } = results;
+      const { categories, item } = results;
 
       res.render('index', {
-        title: 'Update Item',
+        title: `Update ${results.item.name}`,
         content: 'item/form',
-        props: { categories, item: currentItem, errors: undefined },
+        props: { categories, item, errors: undefined },
       });
     }
   );
@@ -164,7 +164,7 @@ exports.item_update_post = [
         if (err) next(err);
 
         res.render('index', {
-          title: 'Update Item',
+          title: `Update ${item.name}`,
           content: 'item/form',
           props: { categories, item, errors: errors.errors },
         });
@@ -178,7 +178,7 @@ exports.item_update_post = [
             if (err) next(err);
 
             res.render('index', {
-              title: 'Update Item',
+              title: `Update ${item.name}`,
               content: 'item/form',
               props: { categories, item, errors: [{ msg: 'An item with this name is already available' }] },
             });
