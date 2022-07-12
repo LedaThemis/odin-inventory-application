@@ -1,5 +1,17 @@
+const path = require('path');
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './uploads');
+  },
+  filename: function (req, file, cb) {
+    console.log('File', file);
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+const upload = multer({ storage: storage });
 
 const home_controller = require('../controllers/homeController');
 const item_controller = require('../controllers/itemController');
@@ -14,7 +26,7 @@ router.get('/', home_controller.home_detail);
 router.get('/item/create', item_controller.item_create_get);
 
 // POST request to create Item
-router.post('/item/create', item_controller.item_create_post);
+router.post('/item/create', upload.single('image'), item_controller.item_create_post);
 
 // GET request to delete Item
 router.get('/item/:id/delete', item_controller.item_delete_get);
@@ -26,7 +38,7 @@ router.post('/item/:id/delete', item_controller.item_delete_post);
 router.get('/item/:id/update', item_controller.item_update_get);
 
 // POST request to update Item
-router.post('/item/:id/update', item_controller.item_update_post);
+router.post('/item/:id/update', upload.single('image'), item_controller.item_update_post);
 
 // GET request for one item
 router.get('/item/:id', item_controller.item_detail);
