@@ -1,5 +1,5 @@
 const async = require('async');
-const { body, validationResult } = require('express-validator');
+const { body, validationResult, check } = require('express-validator');
 
 const Item = require('../models/item');
 const Category = require('../models/category');
@@ -26,21 +26,9 @@ exports.item_create_get = function (req, res, next) {
   });
 };
 
-exports.item_create_post = [
+const item_validators = [
   // Validate and sanitize fields.
-  body('name', 'Name must not be empty.')
-    .custom(async (name) => {
-      return Item.find({ name }).then((results) => {
-        if (results.length === 0) {
-          return Promise.resolve();
-        } else {
-          return Promise.reject('Item is already available');
-        }
-      });
-    })
-    .trim()
-    .isLength({ min: 1 })
-    .escape(),
+  body('name', 'Name must not be empty.').trim().isLength({ min: 1 }).escape(),
   body('description', 'Description must not be empty.').trim().isLength({ min: 1 }).escape(),
   body('price', 'Price must not be empty.')
     .trim()
@@ -69,6 +57,19 @@ exports.item_create_post = [
     .trim()
     .isLength({ min: 1 })
     .escape(),
+];
+
+exports.item_create_post = [
+  ...item_validators,
+  body('name').custom(async (name) => {
+    return Item.findOne({ name }).then((foundItem) => {
+      if (foundItem) {
+        return Promise.reject('Item is already available');
+      } else {
+        return Promise.resolve();
+      }
+    });
+  }),
 
   (req, res, next) => {
     // Extract the validation errors from a request
@@ -134,6 +135,54 @@ exports.item_update_get = function (req, res, next) {
   );
 };
 
-exports.item_update_post = function (req, res, next) {
-  res.send('NOT IMPLEMENTED');
-};
+exports.item_update_post = [
+  ...item_validators,
+
+  (req, res, next) => {
+    // Extract the validation errors from a request
+    const errors = validationResult(req);
+    const fields = {
+      name: req.body.name,
+      description: req.body.description,
+      category: req.body.category,
+      price: req.body.price,
+      numberInStock: req.body.numberInStock,
+    };
+
+    const item = new Item(fields);
+
+    if (!errors.isEmpty()) {
+      Category.find().exec((err, categories) => {
+        if (err) next(err);
+
+        res.render('index', {
+          title: 'Update Item',
+          content: 'item/form',
+          props: { categories, item, errors: errors.errors },
+        });
+      });
+    } else {
+      Item.findOne({ name: req.body.name }).exec((err, foundItem) => {
+        if (err) next(err);
+
+        if (foundItem && `${foundItem._id}` !== `${req.params.id}`) {
+          Category.find().exec((err, categories) => {
+            if (err) next(err);
+
+            res.render('index', {
+              title: 'Update Item',
+              content: 'item/form',
+              props: { categories, item, errors: [{ msg: 'An item with this name is already available' }] },
+            });
+          });
+        } else {
+          Item.findByIdAndUpdate(req.params.id, fields, {}, (err, updatedItem) => {
+            if (err) next(err);
+
+            res.redirect(updatedItem.url);
+          });
+        }
+      });
+    }
+  },
+];
