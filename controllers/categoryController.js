@@ -1,5 +1,28 @@
+const async = require('async');
+
+const Category = require('../models/category');
+const Item = require('../models/item');
+
 exports.category_detail = function (req, res, next) {
-  res.send('NOT IMPLEMENTED');
+  async.parallel(
+    {
+      category: (callback) => {
+        Category.findById(req.params.id).exec(callback);
+      },
+      category_items: (callback) => {
+        Item.find({ category: req.params.id }, 'name').exec(callback);
+      },
+    },
+    (err, results) => {
+      if (err) next(err);
+
+      res.render('index', {
+        title: `${results.category.name} Category`,
+        content: 'category/detail',
+        props: { ...results },
+      });
+    }
+  );
 };
 
 exports.category_create_get = function (req, res, next) {
