@@ -1,4 +1,5 @@
 const Item = require('../models/item');
+const Category = require('../models/category');
 
 exports.item_detail = function (req, res, next) {
   Item.findById(req.params.id)
@@ -11,7 +12,11 @@ exports.item_detail = function (req, res, next) {
 };
 
 exports.item_create_get = function (req, res, next) {
-  res.send('NOT IMPLEMENTED');
+  Category.find().exec((err, categories) => {
+    if (err) next(err);
+
+    res.render('index', { title: 'Create Item', content: 'item/create_get', props: { categories, item: undefined } });
+  });
 };
 
 exports.item_create_post = function (req, res, next) {
